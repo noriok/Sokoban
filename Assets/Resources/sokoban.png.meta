@@ -1,0 +1,457 @@
+fileFormatVersion: 2
+guid: a1c94361aeb5045ad91494b4e1ec3549
+timeCreated: 1456811004
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: spWall
+    21300002: spFloor
+    21300004: spTarget
+    21300006: spBox
+    21300008: sokoban_4
+    21300010: spPlayerN
+    21300012: spPlayerS
+    21300014: spPlayerE
+    21300016: spPlayerW
+    21300018: sokoban_9
+    21300020: sokoban_10
+    21300022: sokoban_11
+    21300024: sokoban_12
+    21300026: sokoban_13
+    21300028: sokoban_14
+    21300030: sokoban_15
+    21300032: sokoban_16
+    21300034: sokoban_17
+    21300036: sokoban_18
+    21300038: sokoban_19
+    21300040: sokoban_20
+    21300042: sokoban_21
+    21300044: sokoban_22
+    21300046: sokoban_23
+    21300048: sokoban_24
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: spWall
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 321
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: spFloor
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 321
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: spTarget
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 321
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: spBox
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 321
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_4
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 321
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: spPlayerN
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 241
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: spPlayerS
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 241
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: spPlayerE
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 242
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: spPlayerW
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 241
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_9
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 241
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 161
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_11
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 161
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_12
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 161
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_13
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 161
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_14
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 161
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 81
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_16
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 81
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_17
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 81
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_18
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 81
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_19
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 81
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_21
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 1
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_22
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 1
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_23
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 1
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    - name: sokoban_24
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 1
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -40, y: 40}
+        - {x: -40, y: -40}
+        - {x: 40, y: -40}
+        - {x: 40, y: 40}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
