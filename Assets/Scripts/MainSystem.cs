@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 // using System.Collections;
 using System.Linq;
 
@@ -6,8 +7,15 @@ public enum SpriteType {
     Wall, Floor, Target, Box, PlayerN, PlayerS, PlayerW, PlayerE
 }
 
+public enum GameState {
+    Play, // プレイ中
+    Clear,  // クリアメッセージ中
+}
+
 public class MainSystem : MonoBehaviour {
+    private GameObject _button;
     private Stage _stage;
+    private GameState _gameState;
 
     Sprite GetSprite(SpriteType spriteType) {
         string name = "";
@@ -34,20 +42,59 @@ public class MainSystem : MonoBehaviour {
 
 	void Start () {
         _stage = new Stage(this);
+
+        GameObject.Find("TextClear").GetComponent<Text>().enabled = false;
+
+        _button = GameObject.Find("Button");
+        _button.GetComponent<Button>().onClick.AddListener(() => {
+            Debug.Log("クリックされました");
+        });
+        _button.SetActive(false);
+
+        _gameState = GameState.Play;
 	}
 
 	void Update () {
+        if (_gameState != GameState.Play) return;
+
+        bool move = false;
         if (Input.GetKeyDown(KeyCode.LeftArrow)) {
             _stage.MoveW();
+            move = true;
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow)) {
             _stage.MoveE();
+            move = true;
         }
         else if (Input.GetKeyDown(KeyCode.UpArrow)) {
             _stage.MoveN();
+            move = true;
         }
         else if (Input.GetKeyDown(KeyCode.DownArrow)) {
             _stage.MoveS();
+            move = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.Space)) {
+            _stage.Undo();
+        }
+
+        if (move && _stage.IsClear()) { // ゲームクリア
+            _gameState = GameState.Clear;
+
+            var o = GameObject.Find("TextClear");
+            o.GetComponent<Text>().enabled = true;
+            _button.SetActive(true);
         }
 	}
+
+    void OnGUI() {
+        if (GUILayout.Button("Show Clear Text")) {
+            var o = GameObject.Find("TextClear");
+            o.GetComponent<Text>().enabled = true;
+        }
+        else if (GUILayout.Button("Hide Clear Text")) {
+            var o = GameObject.Find("TextClear");
+            o.GetComponent<Text>().enabled = false;
+        }
+    }
 }

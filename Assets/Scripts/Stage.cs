@@ -15,6 +15,7 @@ public class Stage {
     private List<string> _stage = new List<string>();
     // private List<GameObject[]> _spStage = new List<GameObject[]>(); // sprite
     private List<GameObject[]> _boxTable = new List<GameObject[]>();
+    private List<bool[]> _targetTable = new List<bool[]>();
     private Player _player;
 
     private int _rows;
@@ -71,6 +72,7 @@ public class Stage {
         _cols = _stage[0].Length;
         for (int i = 0; i < _rows; i++) {
             _boxTable.Add(new GameObject[_cols]);
+            _targetTable.Add(new bool[_cols]);
         }
         const float size = SPRITE_SIZE;
         for (int i = 0; i < _stage.Count; i++) {
@@ -92,6 +94,8 @@ public class Stage {
                     var target = sys.Bless("Target", SpriteType.Target);
                     target.transform.position = new Vector3(size * j, -size * i, 0);
                     target.GetComponent<SpriteRenderer>().sortingLayerName = "Stage";
+
+                    _targetTable[i][j] = true;
                     break;
 
                 case CHAR_BOX:
@@ -118,6 +122,19 @@ public class Stage {
                 }
             }
         }
+    }
+
+    public bool IsClear() {
+        for (int i = 0; i < _rows; i++) {
+            for (int j = 0; j < _cols; j++) {
+                if (_targetTable[i][j]) {
+                    if (_boxTable[i][j] == null) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     private bool isWall(int row, int col) {
@@ -153,73 +170,65 @@ public class Stage {
         return true;
     }
 
-    private void UpdatePlayerPosition(int drow, int dcol) {
-        _player.row += drow;
-        _player.col += dcol;
+    // プレイヤーの向きに応じてスプライトの表示を切り替える
+    private void UpdatePlayerDirection(int drow, int dcol) {
+        _player.sp.SetActive(false);
 
         if (drow == -1) {
-            _player.sp.SetActive(false);
             _player.sp = _player.spN;
         }
         else if (drow == 1) {
-            _player.sp.SetActive(false);
             _player.sp = _player.spS;
-            Debug.Log(_player.sp);
         }
         else if (dcol == -1) {
-            _player.sp.SetActive(false);
             _player.sp = _player.spW;
         }
         else if (dcol == 1) {
-            _player.sp.SetActive(false);
             _player.sp = _player.spE;
         }
-
         _player.sp.SetActive(true);
+    }
+
+    private void UpdatePlayerPosition(int drow, int dcol) {
+        UpdatePlayerDirection(drow, dcol);
+        _player.row += drow;
+        _player.col += dcol;
+
         _player.sp.transform.position = new Vector3(SPRITE_SIZE * _player.col, -SPRITE_SIZE * _player.row, 0);
     }
 
-    public void MoveN() {
-        int row = _player.row - 1;
-        int col = _player.col;
+    private void Move(int drow, int dcol) {
+        int row = _player.row + drow;
+        int col = _player.col + dcol;
         if (isWall(row, col)) return;
 
         if (existsBox(row, col)) {
-            if (!tryMoveBox(row, col, -1, 0)) return;
+            if (!tryMoveBox(row, col, drow, dcol)) return;
         }
-        UpdatePlayerPosition(-1, 0);
+        UpdatePlayerPosition(drow, dcol);
+
+        if (IsClear()) {
+            Debug.Log("CLEAR!!");
+        }
+    }
+
+    public void MoveN() {
+        Move(-1, 0);
     }
 
     public void MoveS() {
-        int row = _player.row + 1;
-        int col = _player.col;
-        if (isWall(row, col)) return;
-
-        if (existsBox(row, col)) {
-            if (!tryMoveBox(row, col, 1, 0)) return;
-        }
-        UpdatePlayerPosition(1, 0);
+        Move(1, 0);
     }
 
     public void MoveE() {
-        int row = _player.row;
-        int col = _player.col + 1;
-        if (isWall(row, col)) return;
-
-        if (existsBox(row, col)) {
-            if (!tryMoveBox(row, col, 0, 1)) return;
-        }
-        UpdatePlayerPosition(0, 1);
+        Move(0, 1);
     }
 
     public void MoveW() {
-        int row = _player.row;
-        int col = _player.col - 1;
-        if (isWall(row, col)) return;
+        Move(0, -1);
+    }
 
-        if (existsBox(row, col)) {
-            if (!tryMoveBox(row, col, 0, -1)) return;
-        }
-        UpdatePlayerPosition(0, -1);
+    public void Undo() {
+        Debug.Log("Undo");
     }
 }
