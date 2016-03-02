@@ -11,11 +11,35 @@ struct Player {
     public GameObject spN, spS, spE, spW;
 }
 
+class Box {
+    public int Row { get; set; }
+    public int Col { get; set; }
+    public GameObject GameObj { get; set; }
+
+    public void UpdateSpritePosition() {
+        const float S = Stage.SPRITE_SIZE;
+        GameObj.transform.position = new Vector3(S * Col, -S * Row, 0);
+    }
+}
+
+class UndoData {
+    public int DeltaRow { get; private set; }
+    public int DeltaCol { get; private set; }
+    public int BoxIndex { get; private set; } // 移動させた箱のインデックス。箱を移動させていないなら -1
+
+    public UndoData(int deltaRow, int deltaCol, int boxIndex) {
+        DeltaRow = deltaRow;
+        DeltaCol = deltaCol;
+        BoxIndex = boxIndex;
+    }
+}
+
 public class Stage {
-    private List<GameObject[]> _boxTable = new List<GameObject[]>();
+    private List<Box> _boxes = new List<Box>();
     private List<bool[]> _targetTable = new List<bool[]>();
     private Player _player;
     private List<string> _stage;
+    private Stack<UndoData> _undo = new Stack<UndoData>();
 
     private GameObject _root; // 全てのスプライトの親オブジェクト
 
@@ -28,7 +52,7 @@ public class Stage {
     private const char CHAR_BOX = 'o';
     private const char CHAR_PLAYER = 'p';
 
-    private const float SPRITE_SIZE = 0.8f;
+    public const float SPRITE_SIZE = 0.8f;
 
     private void SetupPlayer(MainSystem sys) {
         var spN = sys.Bless("Player", SpriteType.PlayerN);
@@ -71,7 +95,6 @@ public class Stage {
         _rows = _stage.Count;
         _cols = _stage[0].Length;
         for (int i = 0; i < _rows; i++) {
-            _boxTable.Add(new GameObject[_cols]);
             _targetTable.Add(new bool[_cols]);
         }
         const float size = SPRITE_SIZE;
@@ -112,7 +135,8 @@ public class Stage {
                     box.GetComponent<SpriteRenderer>().sortingLayerName = "Object";
                     box.transform.SetParent(_root.transform);
 
-                    _boxTable[i][j] = box;
+                    var b = new Box { Row = i, Col = j, GameObj = box };
+                    _boxes.Add(b);
                     break;
 
                 case CHAR_PLAYER:
@@ -131,13 +155,9 @@ public class Stage {
     }
 
     public bool IsClear() {
-        for (int i = 0; i < _rows; i++) {
-            for (int j = 0; j < _cols; j++) {
-                if (_targetTable[i][j]) {
-                    if (_boxTable[i][j] == null) {
-                        return false;
-                    }
-                }
+        foreach (var box in _boxes) {
+            if (!_targetTable[box.Row][box.Col]) {
+                return false;
             }
         }
         return true;
@@ -154,10 +174,7 @@ public class Stage {
     }
 
     private bool existsBox(int row, int col) {
-        if (0 <= row && row < _rows && 0 <= col && col < _cols) {
-            return _boxTable[row][col] != null;
-        }
-        return false;
+        return _boxes.Exists(e => e.Row == row && e.Col == col);
     }
 
     // (row, col) にある箱を、(row+drow, col+dcol) に移動できたなら true
@@ -169,10 +186,10 @@ public class Stage {
         int c = col + dcol;
         if (isWall(r, c) || existsBox(r, c)) return false;
 
-        _boxTable[r][c] = _boxTable[row][col];
-        _boxTable[row][col] = null;
-
-        _boxTable[r][c].transform.position = new Vector3(SPRITE_SIZE * c, -SPRITE_SIZE * r, 0);
+        var box = _boxes.Find(e => e.Row == row && e.Col == col);
+        box.Row = r;
+        box.Col = c;
+        box.UpdateSpritePosition();
         return true;
     }
 
@@ -200,7 +217,11 @@ public class Stage {
         _player.row += drow;
         _player.col += dcol;
 
-        _player.sp.transform.position = new Vector3(SPRITE_SIZE * _player.col, -SPRITE_SIZE * _player.row, 0);
+        var pos = new Vector3(SPRITE_SIZE * _player.col, -SPRITE_SIZE * _player.row, 0);
+        _player.spN.transform.position = pos;
+        _player.spS.transform.position = pos;
+        _player.spW.transform.position = pos;
+        _player.spE.transform.position = pos;
     }
 
     private void Move(int drow, int dcol) {
@@ -208,14 +229,19 @@ public class Stage {
         int col = _player.col + dcol;
         if (isWall(row, col)) return;
 
+        int boxIndex = -1;
         if (existsBox(row, col)) {
+            for (int i = 0; i < _boxes.Count; i++) {
+                if (_boxes[i].Row == row && _boxes[i].Col == col) {
+                    boxIndex = i;
+                    break;
+                }
+            }
+
             if (!tryMoveBox(row, col, drow, dcol)) return;
         }
         UpdatePlayerPosition(drow, dcol);
-
-        if (IsClear()) {
-            Debug.Log("CLEAR!!");
-        }
+        _undo.Push(new UndoData(drow, dcol, boxIndex));
     }
 
     public void MoveN() {
@@ -235,6 +261,17 @@ public class Stage {
     }
 
     public void Undo() {
-        Debug.Log("Undo");
+        if (_undo.Count == 0) return;
+
+        var undo = _undo.Pop();
+
+        UpdatePlayerPosition(undo.DeltaRow * -1, undo.DeltaCol * -1);
+        UpdatePlayerDirection(undo.DeltaRow, undo.DeltaCol);
+        if (undo.BoxIndex != -1) {
+            var box = _boxes[undo.BoxIndex];
+            box.Row += undo.DeltaRow * -1;
+            box.Col += undo.DeltaCol * -1;
+            box.UpdateSpritePosition();
+        }
     }
 }
