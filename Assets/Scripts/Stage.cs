@@ -18,6 +18,8 @@ public class Stage {
     private List<bool[]> _targetTable = new List<bool[]>();
     private Player _player;
 
+    private GameObject _root; // 全てのスプライトの親オブジェクト
+
     private int _rows;
     private int _cols;
 
@@ -29,28 +31,22 @@ public class Stage {
 
     private const float SPRITE_SIZE = 0.8f;
 
-	void Init() {
-        Debug.Log("Stage : start");
-        _stage.Add("#######");
-        _stage.Add("#.....#");
-        _stage.Add("#.xo..#");
-        _stage.Add("#.p...#");
-        _stage.Add("#.....#");
-        _stage.Add("#######");
-	}
-
     private void SetupPlayer(MainSystem sys) {
         var spN = sys.Bless("Player", SpriteType.PlayerN);
         spN.GetComponent<SpriteRenderer>().sortingLayerName = "Player";
+        spN.transform.SetParent(_root.transform);
 
         var spS = sys.Bless("Player", SpriteType.PlayerS);
         spS.GetComponent<SpriteRenderer>().sortingLayerName = "Player";
+        spS.transform.SetParent(_root.transform);
 
         var spE = sys.Bless("Player", SpriteType.PlayerE);
         spE.GetComponent<SpriteRenderer>().sortingLayerName = "Player";
+        spE.transform.SetParent(_root.transform);
 
         var spW = sys.Bless("Player", SpriteType.PlayerW);
         spW.GetComponent<SpriteRenderer>().sortingLayerName = "Player";
+        spW.transform.SetParent(_root.transform);
 
         _player.spN = spN;
         _player.spS = spS;
@@ -64,8 +60,13 @@ public class Stage {
         _player.sp = spN;
     }
 
-    public Stage(MainSystem sys) {
-        Init();
+    public void DestorySprites() {
+        GameObject.Destroy(_root);
+    }
+
+    public Stage(List<string> stage, MainSystem sys) {
+        _root = new GameObject("SpriteRoot");
+        _stage = stage;
         SetupPlayer(sys);
 
         _rows = _stage.Count;
@@ -82,18 +83,21 @@ public class Stage {
                     var wall = sys.Bless("Wall", SpriteType.Wall);
                     wall.transform.position = new Vector3(size * j, -size * i, 0);
                     wall.GetComponent<SpriteRenderer>().sortingLayerName = "Stage";
+                    wall.transform.SetParent(_root.transform);
                     break;
 
                 case CHAR_FLOOR:
                     var floor = sys.Bless("Floor", SpriteType.Floor);
                     floor.transform.position = new Vector3(size * j, -size * i, 0);
                     floor.GetComponent<SpriteRenderer>().sortingLayerName = "Stage";
+                    floor.transform.SetParent(_root.transform);
                     break;
 
                 case CHAR_TARGET:
                     var target = sys.Bless("Target", SpriteType.Target);
                     target.transform.position = new Vector3(size * j, -size * i, 0);
                     target.GetComponent<SpriteRenderer>().sortingLayerName = "Stage";
+                    target.transform.SetParent(_root.transform);
 
                     _targetTable[i][j] = true;
                     break;
@@ -102,10 +106,12 @@ public class Stage {
                     var floor2 = sys.Bless("Floor", SpriteType.Floor);
                     floor2.transform.position = new Vector3(size * j, -size * i, 0);
                     floor2.GetComponent<SpriteRenderer>().sortingLayerName = "Stage";
+                    floor2.transform.SetParent(_root.transform);
 
                     var box = sys.Bless("Box", SpriteType.Box);
                     box.transform.position = new Vector3(size * j, -size * i, 0);
                     box.GetComponent<SpriteRenderer>().sortingLayerName = "Object";
+                    box.transform.SetParent(_root.transform);
 
                     _boxTable[i][j] = box;
                     break;
@@ -114,6 +120,7 @@ public class Stage {
                     var floor3 = sys.Bless("Floor", SpriteType.Floor);
                     floor3.transform.position = new Vector3(size * j, -size * i, 0);
                     floor3.GetComponent<SpriteRenderer>().sortingLayerName = "Stage";
+                    floor3.transform.SetParent(_root.transform);
 
                     _player.row = i;
                     _player.col = j;

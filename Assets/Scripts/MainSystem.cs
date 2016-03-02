@@ -16,6 +16,7 @@ public class MainSystem : MonoBehaviour {
     private GameObject _button;
     private Stage _stage;
     private GameState _gameState;
+    private GameManager _gameManager;
 
     Sprite GetSprite(SpriteType spriteType) {
         string name = "";
@@ -41,13 +42,18 @@ public class MainSystem : MonoBehaviour {
     }
 
 	void Start () {
-        _stage = new Stage(this);
+        _gameManager = new GameManager();
+        _stage = new Stage(_gameManager.NextStage(), this);
 
         GameObject.Find("TextClear").GetComponent<Text>().enabled = false;
 
         _button = GameObject.Find("Button");
         _button.GetComponent<Button>().onClick.AddListener(() => {
-            Debug.Log("クリックされました");
+            GameObject.Find("TextClear").GetComponent<Text>().enabled = false;
+            _button.SetActive(false);
+            _stage.DestorySprites();
+            _stage = new Stage(_gameManager.NextStage(), this);
+            _gameState = GameState.Play;
         });
         _button.SetActive(false);
 
