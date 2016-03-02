@@ -12,11 +12,10 @@ struct Player {
 }
 
 public class Stage {
-    private List<string> _stage = new List<string>();
-    // private List<GameObject[]> _spStage = new List<GameObject[]>(); // sprite
     private List<GameObject[]> _boxTable = new List<GameObject[]>();
     private List<bool[]> _targetTable = new List<bool[]>();
     private Player _player;
+    private List<string> _stage;
 
     private GameObject _root; // 全てのスプライトの親オブジェクト
 
