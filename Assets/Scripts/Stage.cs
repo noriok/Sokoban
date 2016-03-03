@@ -43,8 +43,8 @@ public class Stage {
 
     private GameObject _root; // 全てのスプライトの親オブジェクト
 
-    private int _rows;
-    private int _cols;
+    private readonly int _rows;
+    private readonly int _cols;
 
     private const char CHAR_WALL = '#';
     private const char CHAR_FLOOR = '.';
@@ -98,6 +98,7 @@ public class Stage {
             _targetTable.Add(new bool[_cols]);
         }
         const float size = SPRITE_SIZE;
+
         for (int i = 0; i < _stage.Count; i++) {
             for (int j = 0; j < _stage[i].Length; j++) {
                 switch (_stage[i][j]) {
@@ -163,7 +164,7 @@ public class Stage {
         return true;
     }
 
-    private bool isWall(int row, int col) {
+    private bool IsWall(int row, int col) {
         if (0 <= row && row < _rows && 0 <= col && col < _cols) {
             if (_stage[row][col] == CHAR_WALL) {
                 return true;
@@ -173,18 +174,18 @@ public class Stage {
         return true;
     }
 
-    private bool existsBox(int row, int col) {
+    private bool ExistsBox(int row, int col) {
         return _boxes.Exists(e => e.Row == row && e.Col == col);
     }
 
     // (row, col) にある箱を、(row+drow, col+dcol) に移動できたなら true
-    private bool tryMoveBox(int row, int col, int drow, int dcol) {
-        Assert.IsTrue(existsBox(row, col));
+    private bool TryMoveBox(int row, int col, int drow, int dcol) {
+        Assert.IsTrue(ExistsBox(row, col));
         Assert.IsTrue(Math.Abs(drow) + Math.Abs(dcol) == 1);
 
         int r = row + drow;
         int c = col + dcol;
-        if (isWall(r, c) || existsBox(r, c)) return false;
+        if (IsWall(r, c) || ExistsBox(r, c)) return false;
 
         var box = _boxes.Find(e => e.Row == row && e.Col == col);
         box.Row = r;
@@ -227,10 +228,10 @@ public class Stage {
     private void Move(int drow, int dcol) {
         int row = _player.row + drow;
         int col = _player.col + dcol;
-        if (isWall(row, col)) return;
+        if (IsWall(row, col)) return;
 
         int boxIndex = -1;
-        if (existsBox(row, col)) {
+        if (ExistsBox(row, col)) {
             for (int i = 0; i < _boxes.Count; i++) {
                 if (_boxes[i].Row == row && _boxes[i].Col == col) {
                     boxIndex = i;
@@ -238,7 +239,7 @@ public class Stage {
                 }
             }
 
-            if (!tryMoveBox(row, col, drow, dcol)) return;
+            if (!TryMoveBox(row, col, drow, dcol)) return;
         }
         UpdatePlayerPosition(drow, dcol);
         _undo.Push(new UndoData(drow, dcol, boxIndex));
