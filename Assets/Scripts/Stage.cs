@@ -3,22 +3,14 @@ using UnityEngine.Assertions;
 using System.Collections.Generic;
 using System;
 
-struct Player {
-    public int row;
-    public int col;
-    public GameObject sp;
-
-    public GameObject spN, spS, spE, spW;
-}
-
 class Box {
     public int Row { get; set; }
     public int Col { get; set; }
     public GameObject GameObj { get; set; }
 
     public void UpdateSpritePosition() {
-        const float S = Stage.SPRITE_SIZE;
-        GameObj.transform.position = new Vector3(S * Col, -S * Row, 0);
+        const float size = Stage.SPRITE_SIZE;
+        GameObj.transform.position = new Vector3(size * Col, -size * Row, 0);
     }
 }
 
@@ -54,35 +46,6 @@ public class Stage {
 
     public const float SPRITE_SIZE = 0.8f;
 
-    private void SetupPlayer(MainSystem sys) {
-        var spN = sys.Bless("Player", SpriteType.PlayerN);
-        spN.GetComponent<SpriteRenderer>().sortingLayerName = "Player";
-        spN.transform.SetParent(_root.transform);
-
-        var spS = sys.Bless("Player", SpriteType.PlayerS);
-        spS.GetComponent<SpriteRenderer>().sortingLayerName = "Player";
-        spS.transform.SetParent(_root.transform);
-
-        var spE = sys.Bless("Player", SpriteType.PlayerE);
-        spE.GetComponent<SpriteRenderer>().sortingLayerName = "Player";
-        spE.transform.SetParent(_root.transform);
-
-        var spW = sys.Bless("Player", SpriteType.PlayerW);
-        spW.GetComponent<SpriteRenderer>().sortingLayerName = "Player";
-        spW.transform.SetParent(_root.transform);
-
-        _player.spN = spN;
-        _player.spS = spS;
-        _player.spE = spE;
-        _player.spW = spW;
-
-        spN.SetActive(true);
-        spS.SetActive(false);
-        spE.SetActive(false);
-        spW.SetActive(false);
-        _player.sp = spN;
-    }
-
     public void DestorySprites() {
         GameObject.Destroy(_root);
     }
@@ -90,69 +53,45 @@ public class Stage {
     public Stage(List<string> stage, MainSystem sys) {
         _root = new GameObject("SpriteRoot");
         _stage = stage;
-        SetupPlayer(sys);
 
         _rows = _stage.Count;
         _cols = _stage[0].Length;
         for (int i = 0; i < _rows; i++) {
             _targetTable.Add(new bool[_cols]);
         }
-        const float size = SPRITE_SIZE;
-
         for (int i = 0; i < _stage.Count; i++) {
             for (int j = 0; j < _stage[i].Length; j++) {
                 switch (_stage[i][j]) {
                 case CHAR_WALL:
-                    var wall = sys.Bless("Wall", SpriteType.Wall);
-                    wall.transform.position = new Vector3(size * j, -size * i, 0);
-                    wall.GetComponent<SpriteRenderer>().sortingLayerName = "Stage";
-                    wall.transform.SetParent(_root.transform);
+                    sys.MakeSprite(SpriteType.Wall, i, j).transform.SetParent(_root.transform);
                     break;
 
                 case CHAR_FLOOR:
-                    var floor = sys.Bless("Floor", SpriteType.Floor);
-                    floor.transform.position = new Vector3(size * j, -size * i, 0);
-                    floor.GetComponent<SpriteRenderer>().sortingLayerName = "Stage";
-                    floor.transform.SetParent(_root.transform);
+                    sys.MakeSprite(SpriteType.Floor, i, j).transform.SetParent(_root.transform);
                     break;
 
                 case CHAR_TARGET:
-                    var target = sys.Bless("Target", SpriteType.Target);
-                    target.transform.position = new Vector3(size * j, -size * i, 0);
-                    target.GetComponent<SpriteRenderer>().sortingLayerName = "Stage";
-                    target.transform.SetParent(_root.transform);
-
+                    sys.MakeSprite(SpriteType.Target, i, j).transform.SetParent(_root.transform);
                     _targetTable[i][j] = true;
                     break;
 
                 case CHAR_BOX:
-                    var floor2 = sys.Bless("Floor", SpriteType.Floor);
-                    floor2.transform.position = new Vector3(size * j, -size * i, 0);
-                    floor2.GetComponent<SpriteRenderer>().sortingLayerName = "Stage";
-                    floor2.transform.SetParent(_root.transform);
+                    sys.MakeSprite(SpriteType.Floor, i, j).transform.SetParent(_root.transform);
 
-                    var box = sys.Bless("Box", SpriteType.Box);
-                    box.transform.position = new Vector3(size * j, -size * i, 0);
-                    box.GetComponent<SpriteRenderer>().sortingLayerName = "Object";
+                    var box = sys.MakeSprite(SpriteType.Box, i, j);
                     box.transform.SetParent(_root.transform);
-
-                    var b = new Box { Row = i, Col = j, GameObj = box };
-                    _boxes.Add(b);
+                    _boxes.Add(new Box { Row = i, Col = j, GameObj = box });
                     break;
 
                 case CHAR_PLAYER:
-                    var floor3 = sys.Bless("Floor", SpriteType.Floor);
-                    floor3.transform.position = new Vector3(size * j, -size * i, 0);
-                    floor3.GetComponent<SpriteRenderer>().sortingLayerName = "Stage";
-                    floor3.transform.SetParent(_root.transform);
-
-                    _player.row = i;
-                    _player.col = j;
-                    _player.sp.transform.position = new Vector3(size * j, -size * i, 0);
+                    sys.MakeSprite(SpriteType.Floor, i, j).transform.SetParent(_root.transform);
+                    _player = new Player(i, j, sys, _root);
                     break;
                 }
             }
         }
+
+        Assert.IsNotNull(_player);
     }
 
     public bool IsClear() {
@@ -166,10 +105,7 @@ public class Stage {
 
     private bool IsWall(int row, int col) {
         if (0 <= row && row < _rows && 0 <= col && col < _cols) {
-            if (_stage[row][col] == CHAR_WALL) {
-                return true;
-            }
-            return false;
+            return _stage[row][col] == CHAR_WALL;
         }
         return true;
     }
@@ -194,40 +130,9 @@ public class Stage {
         return true;
     }
 
-    // プレイヤーの向きに応じてスプライトの表示を切り替える
-    private void UpdatePlayerDirection(int drow, int dcol) {
-        _player.sp.SetActive(false);
-
-        if (drow == -1) {
-            _player.sp = _player.spN;
-        }
-        else if (drow == 1) {
-            _player.sp = _player.spS;
-        }
-        else if (dcol == -1) {
-            _player.sp = _player.spW;
-        }
-        else if (dcol == 1) {
-            _player.sp = _player.spE;
-        }
-        _player.sp.SetActive(true);
-    }
-
-    private void UpdatePlayerPosition(int drow, int dcol) {
-        UpdatePlayerDirection(drow, dcol);
-        _player.row += drow;
-        _player.col += dcol;
-
-        var pos = new Vector3(SPRITE_SIZE * _player.col, -SPRITE_SIZE * _player.row, 0);
-        _player.spN.transform.position = pos;
-        _player.spS.transform.position = pos;
-        _player.spW.transform.position = pos;
-        _player.spE.transform.position = pos;
-    }
-
     private void Move(int drow, int dcol) {
-        int row = _player.row + drow;
-        int col = _player.col + dcol;
+        int row = _player.Row + drow;
+        int col = _player.Col + dcol;
         if (IsWall(row, col)) return;
 
         int boxIndex = -1;
@@ -241,7 +146,7 @@ public class Stage {
 
             if (!TryMoveBox(row, col, drow, dcol)) return;
         }
-        UpdatePlayerPosition(drow, dcol);
+        _player.UpdatePosition(drow, dcol);
         _undo.Push(new UndoData(drow, dcol, boxIndex));
     }
 
@@ -265,9 +170,8 @@ public class Stage {
         if (_undo.Count == 0) return;
 
         var undo = _undo.Pop();
-
-        UpdatePlayerPosition(undo.DeltaRow * -1, undo.DeltaCol * -1);
-        UpdatePlayerDirection(undo.DeltaRow, undo.DeltaCol);
+        _player.UpdatePosition(undo.DeltaRow * -1, undo.DeltaCol * -1);
+        _player.UpdateDirection(undo.DeltaRow, undo.DeltaCol);
         if (undo.BoxIndex != -1) {
             var box = _boxes[undo.BoxIndex];
             box.Row += undo.DeltaRow * -1;

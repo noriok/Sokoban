@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
-// using System.Collections;
 using System.Linq;
 
 public enum SpriteType {
@@ -18,7 +18,7 @@ public class MainSystem : MonoBehaviour {
     private GameState _gameState;
     private GameManager _gameManager;
 
-    Sprite GetSprite(SpriteType spriteType) {
+    private Sprite GetSprite(SpriteType spriteType) {
         string name = "";
         switch (spriteType) {
         case SpriteType.Wall:    name = "spWall"; break;
@@ -41,23 +41,55 @@ public class MainSystem : MonoBehaviour {
         return obj;
     }
 
+    public GameObject MakeSprite(SpriteType spriteType, int row, int col) {
+        string name = "";
+        string layerName = "";
+        switch (spriteType) {
+        case SpriteType.Wall:
+            name = "Wall";
+            layerName = "Stage";
+            break;
+        case SpriteType.Floor:
+            name = "Floor";
+            layerName = "Stage";
+            break;
+        case SpriteType.Target:
+            name = "Target";
+            layerName = "Stage";
+            break;
+        case SpriteType.Box:
+            name = "Box";
+            layerName = "Object";
+            break;
+        default:
+            Assert.IsTrue(false);
+            break;
+        }
+
+        var obj = new GameObject(name);
+        obj.AddComponent<SpriteRenderer>().sprite = GetSprite(spriteType);
+        obj.GetComponent<SpriteRenderer>().sortingLayerName = layerName;
+        const float size = Stage.SPRITE_SIZE;
+        obj.transform.position = new Vector3(size * col, -size * row, 0);
+        return obj;
+    }
+
 	void Start () {
         _gameManager = new GameManager();
         _stage = new Stage(_gameManager.NextStage(), this);
+        _gameState = GameState.Play;
 
         GameObject.Find("TextClear").GetComponent<Text>().enabled = false;
 
         _button = GameObject.Find("Button");
         _button.GetComponent<Button>().onClick.AddListener(() => {
-            GameObject.Find("TextClear").GetComponent<Text>().enabled = false;
             _button.SetActive(false);
+            GameObject.Find("TextClear").GetComponent<Text>().enabled = false;
             _stage.DestorySprites();
             _stage = new Stage(_gameManager.NextStage(), this);
             _gameState = GameState.Play;
         });
         _button.SetActive(false);
-
-        _gameState = GameState.Play;
 	}
 
 	void Update () {
