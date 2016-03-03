@@ -4,13 +4,21 @@ using System.Collections.Generic;
 using System;
 
 class Box {
-    public int Row { get; set; }
-    public int Col { get; set; }
-    public GameObject GameObj { get; set; }
+    public int Row { get; private set; }
+    public int Col { get; private set; }
+    public GameObject Sprite { get; private set; }
 
-    public void UpdateSpritePosition() {
+    public Box(int row, int col, GameObject sprite) {
+        Row = row;
+        Col = col;
+        Sprite = sprite;
+    }
+
+    public void UpdatePosition(int drow, int dcol) {
+        Row += drow;
+        Col += dcol;
         const float size = Stage.SPRITE_SIZE;
-        GameObj.transform.position = new Vector3(size * Col, -size * Row, 0);
+        Sprite.transform.position = new Vector3(size * Col, -size * Row, 0);
     }
 }
 
@@ -80,7 +88,7 @@ public class Stage {
 
                     var box = sys.MakeSprite(SpriteType.Box, i, j);
                     box.transform.SetParent(_root.transform);
-                    _boxes.Add(new Box { Row = i, Col = j, GameObj = box });
+                    _boxes.Add(new Box(i, j, box));
                     break;
 
                 case CHAR_PLAYER:
@@ -90,7 +98,6 @@ public class Stage {
                 }
             }
         }
-
         Assert.IsNotNull(_player);
     }
 
@@ -124,9 +131,7 @@ public class Stage {
         if (IsWall(r, c) || ExistsBox(r, c)) return false;
 
         var box = _boxes.Find(e => e.Row == row && e.Col == col);
-        box.Row = r;
-        box.Col = c;
-        box.UpdateSpritePosition();
+        box.UpdatePosition(drow, dcol);
         return true;
     }
 
@@ -174,9 +179,7 @@ public class Stage {
         _player.UpdateDirection(undo.DeltaRow, undo.DeltaCol);
         if (undo.BoxIndex != -1) {
             var box = _boxes[undo.BoxIndex];
-            box.Row += undo.DeltaRow * -1;
-            box.Col += undo.DeltaCol * -1;
-            box.UpdateSpritePosition();
+            box.UpdatePosition(undo.DeltaRow * -1, undo.DeltaCol * -1);
         }
     }
 }
