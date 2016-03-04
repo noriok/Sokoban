@@ -86,9 +86,24 @@ public class Stage {
                     _boxes.Add(new Box(i, j, box));
                     break;
 
+                case StageChar.TargetAndBox:
+                    sys.MakeSprite(SpriteType.Target, i, j).transform.SetParent(_root.transform);
+                    _targetTable[i][j] = true;
+
+                    sys.MakeSprite(SpriteType.Floor, i, j).transform.SetParent(_root.transform);
+
+                    var box2 = sys.MakeSprite(SpriteType.Box, i, j);
+                    box2.transform.SetParent(_root.transform);
+                    _boxes.Add(new Box(i, j, box2));
+                    break;
+
                 case StageChar.Player:
                     sys.MakeSprite(SpriteType.Floor, i, j).transform.SetParent(_root.transform);
                     _player = new Player(i, j, sys, _root);
+                    break;
+
+                default:
+                    Assert.IsTrue(false);
                     break;
                 }
             }
