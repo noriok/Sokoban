@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class GameManager {
-    private int _count = 1;
+    private int _count = 0;
 
     public GameManager() {
     }
@@ -12,8 +12,10 @@ public class GameManager {
         return _count == 3;
     }
 
+    public string StageName { get { return string.Format("Stage {0}", _count); }}
+
     public List<string> NextStage() {
-        string filename = string.Format("Stage/stage{0}", _count++);
+        string filename = string.Format("Stage/stage{0}", ++_count);
         return ReadStageData(filename);
 	}
 

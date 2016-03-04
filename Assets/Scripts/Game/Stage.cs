@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
 
@@ -42,6 +43,9 @@ public class Stage {
     private List<string> _stage;
     private Stack<UndoData> _undo = new Stack<UndoData>();
 
+    private Text _stepCountText;
+    private int _stepCount;
+
     private GameObject _root; // 全てのスプライトの親オブジェクト
 
     private readonly int _rows;
@@ -56,6 +60,9 @@ public class Stage {
     public Stage(List<string> stage, MainSystem sys) {
         _root = new GameObject("SpriteRoot");
         _stage = stage;
+
+        _stepCountText = GameObject.Find("StepCountText").GetComponent<Text>();
+        _stepCountText.text = "Step: 0";
 
         _rows = _stage.Count;
         _cols = _stage[0].Length;
@@ -154,10 +161,10 @@ public class Stage {
         return true;
     }
 
-    private void Move(int drow, int dcol) {
+    private bool Move(int drow, int dcol) {
         int row = _player.Row + drow;
         int col = _player.Col + dcol;
-        if (IsWall(row, col)) return;
+        if (IsWall(row, col)) return false;
 
         int boxIndex = -1;
         if (ExistsBox(row, col)) {
@@ -168,26 +175,30 @@ public class Stage {
                 }
             }
 
-            if (!TryMoveBox(row, col, drow, dcol)) return;
+            if (!TryMoveBox(row, col, drow, dcol)) return false;
         }
         _player.UpdatePosition(drow, dcol);
         _undo.Push(new UndoData(drow, dcol, boxIndex));
+
+        _stepCount++;
+        _stepCountText.text = string.Format("Step: {0}", _stepCount);
+        return true;
     }
 
-    public void MoveN() {
-        Move(-1, 0);
+    public bool MoveN() {
+        return Move(-1, 0);
     }
 
-    public void MoveS() {
-        Move(1, 0);
+    public bool MoveS() {
+        return Move(1, 0);
     }
 
-    public void MoveE() {
-        Move(0, 1);
+    public bool MoveE() {
+        return Move(0, 1);
     }
 
-    public void MoveW() {
-        Move(0, -1);
+    public bool MoveW() {
+        return Move(0, -1);
     }
 
     public void Undo() {
@@ -200,5 +211,8 @@ public class Stage {
             var box = _boxes[undo.BoxIndex];
             box.UpdatePosition(undo.DeltaRow * -1, undo.DeltaCol * -1);
         }
+
+        _stepCount--;
+        _stepCountText.text = string.Format("Step: {0}", _stepCount);
     }
 }

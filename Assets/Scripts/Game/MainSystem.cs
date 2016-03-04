@@ -19,6 +19,7 @@ public class MainSystem : MonoBehaviour {
     private Stage _stage;
     private GameState _gameState;
     private GameManager _gameManager;
+    private Text _stageNameText;
 
     private Sprite GetSprite(SpriteType spriteType) {
         string name = "";
@@ -95,36 +96,36 @@ public class MainSystem : MonoBehaviour {
                 _stage.DestorySprites();
                 _stage = new Stage(_gameManager.NextStage(), this);
                 _gameState = GameState.Play;
+                _stageNameText.text = _gameManager.StageName;
             }
         });
         _button.SetActive(false);
+
+        _stageNameText = GameObject.Find("StageNameText").GetComponent<Text>();
+        _stageNameText.text = _gameManager.StageName;
 	}
 
 	void Update () {
         if (_gameState != GameState.Play) return;
 
-        bool move = false;
+        bool moved = false;
         if (Input.GetKeyDown(KeyCode.LeftArrow)) {
-            _stage.MoveW();
-            move = true;
+            moved = _stage.MoveW();
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow)) {
-            _stage.MoveE();
-            move = true;
+            moved = _stage.MoveE();
         }
         else if (Input.GetKeyDown(KeyCode.UpArrow)) {
-            _stage.MoveN();
-            move = true;
+            moved = _stage.MoveN();
         }
         else if (Input.GetKeyDown(KeyCode.DownArrow)) {
-            _stage.MoveS();
-            move = true;
+            moved = _stage.MoveS();
         }
         else if (Input.GetKeyDown(KeyCode.Space)) {
             _stage.Undo();
         }
 
-        if (move && _stage.IsClear()) { // ゲームクリア
+        if (moved && _stage.IsClear()) { // ゲームクリア
             _gameState = GameState.Clear;
 
             var text = GameObject.Find("TextClear");
