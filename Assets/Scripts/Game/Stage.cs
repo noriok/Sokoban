@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 using System;
 
@@ -8,19 +9,41 @@ class Box {
     public int Row { get; private set; }
     public int Col { get; private set; }
     public GameObject Sprite { get; private set; }
+    public bool IsMoving { get; private set; }
 
     public Box(int row, int col, GameObject sprite) {
+        IsMoving = false;
         Row = row;
         Col = col;
         Sprite = sprite;
     }
 
-    public void UpdatePosition(int drow, int dcol) {
+    public void UpdatePositionImmediately(int drow, int dcol) {
         Row += drow;
         Col += dcol;
-        const float size = Stage.SpriteSize
-   ;
+        const float size = Stage.SpriteSize;
         Sprite.transform.localPosition = new Vector3(size * Col, -size * Row, 0);
+    }
+
+    public IEnumerator UpdatePosition(int drow, int dcol) {
+        Assert.IsFalse(IsMoving);
+        IsMoving = true;
+
+        const float size = Stage.SpriteSize;
+        const float duration = 0.2f;
+        float elapsedTime = 0;
+        var start = Sprite.transform.localPosition;
+        float dx = size * dcol;
+        float dy = -size * drow;
+        while (elapsedTime < duration) {
+            elapsedTime += Time.deltaTime;
+            float x = Mathf.Lerp(start.x, start.x + dx, elapsedTime / duration);
+            float y = Mathf.Lerp(start.y, start.y + dy, elapsedTime / duration);
+            Sprite.transform.localPosition = new Vector3(x, y, 0);
+            yield return null;
+        }
+        UpdatePositionImmediately(drow, dcol);
+        IsMoving = false;
     }
 }
 
@@ -53,11 +76,14 @@ public class Stage {
 
     public const float SpriteSize = 0.8f;
 
+    private MainSystem _sys;
+
     public void DestorySprites() {
         GameObject.Destroy(_root);
     }
 
     public Stage(List<string> stage, MainSystem sys) {
+        _sys = sys;
         _root = new GameObject("SpriteRoot");
         _stage = stage;
 
@@ -127,6 +153,14 @@ public class Stage {
         _root.transform.position = pos;
     }
 
+    public bool IsMoving() {
+        if (_player.IsMoving) return true;
+        foreach (var box in _boxes) {
+            if (box.IsMoving) return true;
+        }
+        return false;
+    }
+
     public bool IsClear() {
         foreach (var box in _boxes) {
             if (!_targetTable[box.Row][box.Col]) {
@@ -157,7 +191,7 @@ public class Stage {
         if (IsWall(r, c) || ExistsBox(r, c)) return false;
 
         var box = _boxes.Find(e => e.Row == row && e.Col == col);
-        box.UpdatePosition(drow, dcol);
+        _sys.StartCoroutine(box.UpdatePosition(drow, dcol));
         return true;
     }
 
@@ -177,7 +211,7 @@ public class Stage {
 
             if (!TryMoveBox(row, col, drow, dcol)) return false;
         }
-        _player.UpdatePosition(drow, dcol);
+        _sys.StartCoroutine(_player.UpdatePosition(drow, dcol));
         _undo.Push(new UndoData(drow, dcol, boxIndex));
 
         _stepCount++;
@@ -205,11 +239,11 @@ public class Stage {
         if (_undo.Count == 0) return;
 
         var undo = _undo.Pop();
-        _player.UpdatePosition(undo.DeltaRow * -1, undo.DeltaCol * -1);
+        _player.UpdatePositionImmediately(undo.DeltaRow * -1, undo.DeltaCol * -1);
         _player.UpdateDirection(undo.DeltaRow, undo.DeltaCol);
         if (undo.BoxIndex != -1) {
             var box = _boxes[undo.BoxIndex];
-            box.UpdatePosition(undo.DeltaRow * -1, undo.DeltaCol * -1);
+            box.UpdatePositionImmediately(undo.DeltaRow * -1, undo.DeltaCol * -1);
         }
 
         _stepCount--;

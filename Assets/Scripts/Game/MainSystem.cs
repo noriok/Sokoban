@@ -108,6 +108,28 @@ public class MainSystem : MonoBehaviour {
 	void Update () {
         if (_gameState != GameState.Play) return;
 
+        if (_stage.IsMoving()) {
+            // Debug.Log("アニメーション中");
+            return;
+        }
+
+        if (_stage.IsClear()) { // ゲームクリア
+            _gameState = GameState.Clear;
+
+            var text = GameObject.Find("TextClear");
+            text.GetComponent<Text>().enabled = true;
+            _button.SetActive(true);
+            if (_gameManager.IsFinalStage()) {
+                text.GetComponent<Text>().text = "All Clear!!";
+                _buttonText.text = "Back to Title";
+            }
+            else {
+                text.GetComponent<Text>().text = "Stage Clear!!";
+                _buttonText.text = "Next Stage";
+            }
+            return;
+        }
+
         bool moved = false;
         if (Input.GetKeyDown(KeyCode.LeftArrow)) {
             moved = _stage.MoveW();
@@ -125,21 +147,7 @@ public class MainSystem : MonoBehaviour {
             _stage.Undo();
         }
 
-        if (moved && _stage.IsClear()) { // ゲームクリア
-            _gameState = GameState.Clear;
 
-            var text = GameObject.Find("TextClear");
-            text.GetComponent<Text>().enabled = true;
-            _button.SetActive(true);
-            if (_gameManager.IsFinalStage()) {
-                text.GetComponent<Text>().text = "All Clear!!";
-                _buttonText.text = "Back to Title";
-            }
-            else {
-                text.GetComponent<Text>().text = "Stage Clear!!";
-                _buttonText.text = "Next Stage";
-            }
-        }
 	}
 
     void OnGUI() {
