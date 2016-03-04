@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Linq;
 
 public enum SpriteType {
@@ -14,6 +15,7 @@ public enum GameState {
 
 public class MainSystem : MonoBehaviour {
     private GameObject _button;
+    private Text _buttonText;
     private Stage _stage;
     private GameState _gameState;
     private GameManager _gameManager;
@@ -81,13 +83,19 @@ public class MainSystem : MonoBehaviour {
 
         GameObject.Find("TextClear").GetComponent<Text>().enabled = false;
 
+        _buttonText = GameObject.Find("Button/Text").GetComponent<Text>();
         _button = GameObject.Find("Button");
         _button.GetComponent<Button>().onClick.AddListener(() => {
-            _button.SetActive(false);
-            GameObject.Find("TextClear").GetComponent<Text>().enabled = false;
-            _stage.DestorySprites();
-            _stage = new Stage(_gameManager.NextStage(), this);
-            _gameState = GameState.Play;
+            if (_gameManager.IsFinalStage()) {
+                SceneManager.LoadScene("Title");
+            }
+            else {
+                _button.SetActive(false);
+                GameObject.Find("TextClear").GetComponent<Text>().enabled = false;
+                _stage.DestorySprites();
+                _stage = new Stage(_gameManager.NextStage(), this);
+                _gameState = GameState.Play;
+            }
         });
         _button.SetActive(false);
 	}
@@ -119,9 +127,17 @@ public class MainSystem : MonoBehaviour {
         if (move && _stage.IsClear()) { // ゲームクリア
             _gameState = GameState.Clear;
 
-            var o = GameObject.Find("TextClear");
-            o.GetComponent<Text>().enabled = true;
+            var text = GameObject.Find("TextClear");
+            text.GetComponent<Text>().enabled = true;
             _button.SetActive(true);
+            if (_gameManager.IsFinalStage()) {
+                text.GetComponent<Text>().text = "All Clear!!";
+                _buttonText.text = "Back to Title";
+            }
+            else {
+                text.GetComponent<Text>().text = "Stage Clear!!";
+                _buttonText.text = "Next Stage";
+            }
         }
 	}
 

@@ -5,4 +5,5 @@ public static class StageChar {
     public const char Box = 'o';
     public const char TargetAndBox = '+';
     public const char Player = 'p';
+    public const char None = ' ';
 }

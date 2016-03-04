@@ -102,6 +102,9 @@ public class Stage {
                     _player = new Player(i, j, sys, _root);
                     break;
 
+                case StageChar.None:
+                    break;
+
                 default:
                     Assert.IsTrue(false);
                     break;
