@@ -8,8 +8,8 @@ public enum SpriteType {
 }
 
 public enum GameState {
-    Play, // プレイ中
-    Clear,  // クリアメッセージ中
+    Play,  // プレイ中
+    Clear, // クリアメッセージ中
 }
 
 public class MainSystem : MonoBehaviour {
@@ -69,7 +69,7 @@ public class MainSystem : MonoBehaviour {
         var obj = new GameObject(name);
         obj.AddComponent<SpriteRenderer>().sprite = GetSprite(spriteType);
         obj.GetComponent<SpriteRenderer>().sortingLayerName = layerName;
-        const float size = Stage.SPRITE_SIZE;
+        const float size = Stage.SpriteSize;
         obj.transform.position = new Vector3(size * col, -size * row, 0);
         return obj;
     }

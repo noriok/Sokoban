@@ -17,7 +17,8 @@ class Box {
     public void UpdatePosition(int drow, int dcol) {
         Row += drow;
         Col += dcol;
-        const float size = Stage.SPRITE_SIZE;
+        const float size = Stage.SpriteSize
+   ;
         Sprite.transform.position = new Vector3(size * Col, -size * Row, 0);
     }
 }
@@ -46,13 +47,7 @@ public class Stage {
     private readonly int _rows;
     private readonly int _cols;
 
-    private const char CHAR_WALL = '#';
-    private const char CHAR_FLOOR = '.';
-    private const char CHAR_TARGET = 'x';
-    private const char CHAR_BOX = 'o';
-    private const char CHAR_PLAYER = 'p';
-
-    public const float SPRITE_SIZE = 0.8f;
+    public const float SpriteSize = 0.8f;
 
     public void DestorySprites() {
         GameObject.Destroy(_root);
@@ -70,20 +65,20 @@ public class Stage {
         for (int i = 0; i < _stage.Count; i++) {
             for (int j = 0; j < _stage[i].Length; j++) {
                 switch (_stage[i][j]) {
-                case CHAR_WALL:
+                case StageChar.Wall:
                     sys.MakeSprite(SpriteType.Wall, i, j).transform.SetParent(_root.transform);
                     break;
 
-                case CHAR_FLOOR:
+                case StageChar.Floor:
                     sys.MakeSprite(SpriteType.Floor, i, j).transform.SetParent(_root.transform);
                     break;
 
-                case CHAR_TARGET:
+                case StageChar.Target:
                     sys.MakeSprite(SpriteType.Target, i, j).transform.SetParent(_root.transform);
                     _targetTable[i][j] = true;
                     break;
 
-                case CHAR_BOX:
+                case StageChar.Box:
                     sys.MakeSprite(SpriteType.Floor, i, j).transform.SetParent(_root.transform);
 
                     var box = sys.MakeSprite(SpriteType.Box, i, j);
@@ -91,7 +86,7 @@ public class Stage {
                     _boxes.Add(new Box(i, j, box));
                     break;
 
-                case CHAR_PLAYER:
+                case StageChar.Player:
                     sys.MakeSprite(SpriteType.Floor, i, j).transform.SetParent(_root.transform);
                     _player = new Player(i, j, sys, _root);
                     break;
@@ -112,7 +107,7 @@ public class Stage {
 
     private bool IsWall(int row, int col) {
         if (0 <= row && row < _rows && 0 <= col && col < _cols) {
-            return _stage[row][col] == CHAR_WALL;
+            return _stage[row][col] == StageChar.Wall;
         }
         return true;
     }

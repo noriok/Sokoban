@@ -11,7 +11,7 @@ class Player {
     public GameObject Sprite { get; private set; }
 
     public Player(int row, int col, MainSystem sys, GameObject root) {
-        const float size = Stage.SPRITE_SIZE;
+        const float size = Stage.SpriteSize;
         var spriteTypes = new[] { SpriteType.PlayerN,
                                   SpriteType.PlayerS,
                                   SpriteType.PlayerE,
@@ -36,7 +36,7 @@ class Player {
         Row += drow;
         Col += dcol;
 
-        const float size = Stage.SPRITE_SIZE;
+        const float size = Stage.SpriteSize;
         var pos = new Vector3(size * Col, -size * Row, 0);
         foreach (var sprite in _spriteMap.Values) {
             sprite.transform.position = pos;
