@@ -19,7 +19,7 @@ class Box {
         Col += dcol;
         const float size = Stage.SpriteSize
    ;
-        Sprite.transform.position = new Vector3(size * Col, -size * Row, 0);
+        Sprite.transform.localPosition = new Vector3(size * Col, -size * Row, 0);
     }
 }
 
@@ -112,6 +112,12 @@ public class Stage {
             }
         }
         Assert.IsNotNull(_player);
+
+        // ステージを画面中央に移動させる
+        var pos = new Vector3(-Stage.SpriteSize * _cols / 2 + Stage.SpriteSize/2,
+                              Stage.SpriteSize * _rows / 2 - Stage.SpriteSize/2,
+                              0);
+        _root.transform.position = pos;
     }
 
     public bool IsClear() {

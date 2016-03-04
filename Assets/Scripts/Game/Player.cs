@@ -39,7 +39,7 @@ class Player {
         const float size = Stage.SpriteSize;
         var pos = new Vector3(size * Col, -size * Row, 0);
         foreach (var sprite in _spriteMap.Values) {
-            sprite.transform.position = pos;
+            sprite.transform.localPosition = pos;
         }
     }
 

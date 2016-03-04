@@ -13,7 +13,6 @@ public class GameManager {
     }
 
     public List<string> NextStage() {
-        // string filename = "Stage/stage1";
         string filename = string.Format("Stage/stage{0}", _count++);
         return ReadStageData(filename);
 	}
