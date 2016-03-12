@@ -10,7 +10,7 @@ public enum SpriteType {
 
 public enum GameState {
     Play,  // プレイ中
-    Clear, // クリアメッセージ中
+    Clear, // クリアメッセージ表示中
 }
 
 public class MainSystem : MonoBehaviour {
@@ -146,8 +146,6 @@ public class MainSystem : MonoBehaviour {
         else if (Input.GetKeyDown(KeyCode.Space)) {
             _stage.Undo();
         }
-
-
 	}
 
     void OnGUI() {
